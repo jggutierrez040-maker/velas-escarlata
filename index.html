@@ -49,11 +49,11 @@
     >
 
     <!-- Hoja de estilos principal -->
-    <link rel="stylesheet" href="css/estilos.css?v=43">
+    <link rel="stylesheet" href="css/estilos.css?v=46">
 
     <!-- Datos y comportamiento del catálogo -->
     <script src="js/productos.js?v=43" defer></script>
-    <script src="js/principal.js?v=43.3" defer></script>
+    <script src="js/principal.js?v=46" defer></script>
 </head>
 <body>
     <!-- Ambiente decorativo: humo y destellos sutiles -->
@@ -69,45 +69,122 @@
         <span class="particula particula-seis"></span>
     </div>
 
-    <!-- Introducción principal de la marca -->
-    <main class="introduccion">
-        <!-- Vela creada completamente con HTML y CSS -->
-        <div class="escena-vela" aria-hidden="true">
-            <div class="aura-vela"></div>
-            <div class="llama">
-                <span class="centro-llama"></span>
-            </div>
-            <div class="mecha"></div>
+    <!-- Relato cinematográfico de entrada: cuatro momentos unidos por la luz -->
+    <main class="introduccion" aria-labelledby="titulo-introduccion">
+        <div class="relato-visual" aria-hidden="true">
+            <figure class="escena-relato activa" data-escena="0">
+                <img
+                    src="imagenes/introduccion/escena-01-familia.webp"
+                    alt=""
+                    width="1806"
+                    height="871"
+                    fetchpriority="high"
+                >
+            </figure>
 
-            <div class="vela">
-                <span class="cera-superior"></span>
-                <span class="gota-cera"></span>
-                <span class="monograma">
-                    <img
-                        src="imagenes/logo-velas-escarlata-web.webp"
-                        alt=""
-                        width="866"
-                        height="866"
-                        decoding="async"
-                        fetchpriority="high"
-                    >
-                </span>
-            </div>
+            <figure class="escena-relato" data-escena="1">
+                <img
+                    src="imagenes/introduccion/escena-02-amor.webp"
+                    alt=""
+                    width="1672"
+                    height="940"
+                    decoding="async"
+                >
+            </figure>
 
-            <div class="sombra-vela"></div>
+            <figure class="escena-relato" data-escena="2">
+                <img
+                    src="imagenes/introduccion/escena-03-boda.webp"
+                    alt=""
+                    width="1774"
+                    height="887"
+                    decoding="async"
+                >
+            </figure>
+
+            <figure class="escena-relato" data-escena="3">
+                <img
+                    src="imagenes/introduccion/escena-04-esperanza.webp"
+                    alt=""
+                    width="1718"
+                    height="915"
+                    decoding="async"
+                >
+            </figure>
         </div>
 
-        <!-- Identidad verbal de la introducción -->
-        <div class="contenido-introduccion">
-            <p class="distintivo">Luz · Aroma · Magia</p>
-            <h1>Velas <span>Escarlata</span></h1>
+        <div class="capa-relato" aria-hidden="true"></div>
+
+        <div class="marca-relato" aria-label="Velas Escarlata">
+            <span class="sello-relato" aria-hidden="true">
+                <img
+                    src="imagenes/logo-velas-escarlata-web.webp"
+                    alt=""
+                    width="866"
+                    height="866"
+                    decoding="async"
+                >
+            </span>
+            <span class="nombre-relato">
+                <strong>Velas Escarlata</strong>
+                <small>Luz · Aroma · Magia</small>
+            </span>
+        </div>
+
+        <button class="boton-omitir-relato" type="button">
+            Omitir introducción <span aria-hidden="true">→</span>
+        </button>
+
+        <div class="mensajes-relato" aria-hidden="true">
+            <article class="mensaje-relato activo" data-mensaje="0">
+                <p>En familia</p>
+                <h2>Una luz que nos reúne.</h2>
+            </article>
+
+            <article class="mensaje-relato" data-mensaje="1">
+                <p>En el amor</p>
+                <h2>Una luz para lo que comienza.</h2>
+            </article>
+
+            <article class="mensaje-relato" data-mensaje="2">
+                <p>En cada promesa</p>
+                <h2>Una luz que guarda el instante.</h2>
+            </article>
+
+            <article class="mensaje-relato" data-mensaje="3">
+                <p>En la esperanza</p>
+                <h2>Una luz para volver a creer.</h2>
+            </article>
+        </div>
+
+        <div class="progreso-relato" aria-hidden="true">
+            <span class="indicador-relato activo"></span>
+            <span class="indicador-relato"></span>
+            <span class="indicador-relato"></span>
+            <span class="indicador-relato"></span>
+        </div>
+
+        <div class="introduccion-final" aria-hidden="true">
+            <p class="distintivo">Aromas · Fuego · Emoción</p>
+            <h1 id="titulo-introduccion">Velas <span>Escarlata</span></h1>
             <p class="frase-marca">Donde la luz y el aroma crean magia.</p>
 
-            <button class="boton-descubrir" type="button">
-                <span>Descubrir la colección</span>
-                <span class="flecha-boton" aria-hidden="true">→</span>
-            </button>
+            <div class="acciones-introduccion">
+                <button class="boton-descubrir" type="button" disabled>
+                    <span>Descubrir la colección</span>
+                    <span class="flecha-boton" aria-hidden="true">→</span>
+                </button>
+
+                <button class="boton-repetir-relato" type="button" disabled>
+                    Repetir historia
+                </button>
+            </div>
         </div>
+
+        <p class="descripcion-relato-accesible">
+            La luz de una vela acompaña encuentros familiares, historias de amor,
+            promesas y momentos de esperanza.
+        </p>
     </main>
 
     <!-- Página principal básica: permanece oculta hasta pulsar el botón -->

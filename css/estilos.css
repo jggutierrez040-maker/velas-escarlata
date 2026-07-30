@@ -32,10 +32,8 @@ html {
 
 body {
     min-height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: clamp(24px, 5vw, 72px);
-    overflow-x: hidden;
+    padding: 0;
+    overflow: hidden;
     color: var(--marfil);
     background:
         radial-gradient(circle at 30% 42%, rgba(143, 21, 41, 0.25), transparent 34%),
@@ -56,30 +54,30 @@ body::before {
     animation: retirar-telon 1.25s cubic-bezier(0.77, 0, 0.18, 1) 0.18s forwards;
 }
 
-/* Ambiente flotante de fondo */
+/* Ambiente flotante sobre el relato visual */
 .ambiente {
     position: fixed;
-    z-index: 0;
+    z-index: 3;
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    transition: opacity 0.65s ease;
+    transition: opacity 0.75s ease;
 }
 
 .humo {
     position: absolute;
-    top: 14%;
-    left: 24%;
-    width: 80px;
-    height: 180px;
+    top: 30%;
+    left: 48%;
+    width: 86px;
+    height: 190px;
     border-radius: 50%;
     background: radial-gradient(
         ellipse,
-        rgba(255, 247, 232, 0.11) 0%,
+        rgba(255, 247, 232, 0.1) 0%,
         rgba(214, 160, 58, 0.04) 42%,
         transparent 72%
     );
-    filter: blur(14px);
+    filter: blur(16px);
     opacity: 0;
 }
 
@@ -88,7 +86,7 @@ body::before {
 }
 
 .humo-dos {
-    left: 27%;
+    left: 53%;
     width: 62px;
     height: 150px;
     animation: elevar-humo-secundario 10s ease-in-out 5.5s infinite;
@@ -141,26 +139,25 @@ body::before {
     animation: flotar-particula 14s linear 7.5s infinite;
 }
 
-/* Distribución principal */
+/* Relato cinematográfico de pantalla completa */
 .introduccion {
     position: relative;
-    z-index: 1;
-    width: min(100%, 1180px);
-    display: grid;
-    grid-template-columns: minmax(230px, 0.8fr) minmax(340px, 1.2fr);
-    align-items: center;
-    gap: clamp(40px, 8vw, 120px);
+    isolation: isolate;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    background: var(--negro-profundo);
     transition:
-        opacity 0.65s ease,
-        filter 0.65s ease,
-        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        opacity 0.75s ease,
+        filter 0.75s ease,
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Salida de la introducción al pulsar el botón */
 body.transicionando .introduccion {
     opacity: 0;
-    filter: blur(7px);
-    transform: translateY(-18px) scale(0.985);
+    filter: blur(8px);
+    transform: scale(1.025);
 }
 
 body.transicionando .ambiente {
@@ -171,41 +168,284 @@ body.transicionando .boton-descubrir {
     pointer-events: none;
 }
 
-.contenido-introduccion {
+.relato-visual,
+.escena-relato,
+.escena-relato img,
+.capa-relato {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.relato-visual {
+    z-index: 0;
+}
+
+.escena-relato {
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(1.015);
+    transition:
+        opacity 1.15s ease,
+        transform 4.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.escena-relato.activa {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.escena-relato img {
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.03);
+}
+
+.escena-relato.activa img {
+    animation: acercamiento-relato 4.5s ease-out both;
+}
+
+.capa-relato {
+    z-index: 1;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(5, 3, 3, 0.78) 0%, rgba(7, 4, 5, 0.2) 56%, rgba(5, 3, 3, 0.38) 100%),
+        linear-gradient(180deg, rgba(5, 3, 3, 0.56) 0%, transparent 36%, rgba(5, 3, 3, 0.82) 100%),
+        radial-gradient(circle at 52% 62%, rgba(143, 21, 41, 0.12), transparent 34%);
+    transition: background 1s ease;
+}
+
+.introduccion.relato-finalizado .capa-relato {
+    background:
+        linear-gradient(90deg, rgba(5, 3, 3, 0.82), rgba(8, 4, 5, 0.68)),
+        radial-gradient(circle at 50% 48%, rgba(104, 15, 30, 0.32), transparent 44%);
+}
+
+.marca-relato {
+    position: absolute;
+    z-index: 5;
+    top: clamp(24px, 4vw, 48px);
+    left: clamp(24px, 5vw, 72px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sello-relato {
+    width: 48px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    flex: 0 0 auto;
+    border: 1px solid rgba(244, 211, 139, 0.7);
+    border-radius: 50%;
+    background: var(--marfil);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.36);
+}
+
+.sello-relato img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.nombre-relato {
+    display: grid;
+    gap: 4px;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.7);
+}
+
+.nombre-relato strong {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+}
+
+.nombre-relato small {
+    color: var(--dorado-claro);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.boton-omitir-relato {
+    position: absolute;
+    z-index: 6;
+    top: clamp(30px, 4.5vw, 54px);
+    right: clamp(24px, 5vw, 72px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border: 0;
+    color: rgba(255, 247, 232, 0.84);
+    background: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s ease, opacity 0.45s ease;
+}
+
+.boton-omitir-relato:hover,
+.boton-omitir-relato:focus-visible {
+    color: var(--dorado-claro);
+}
+
+.boton-omitir-relato[hidden] {
+    display: none;
+}
+
+.mensajes-relato {
+    position: absolute;
+    z-index: 4;
+    left: clamp(24px, 8vw, 120px);
+    bottom: clamp(112px, 17vh, 170px);
+    width: min(640px, calc(100% - 48px));
+    min-height: 130px;
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mensaje-relato {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    opacity: 0;
+    filter: blur(7px);
+    transform: translateY(22px);
+    transition:
+        opacity 0.9s ease,
+        filter 0.9s ease,
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mensaje-relato.activo {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+
+.mensaje-relato p {
+    margin: 0 0 13px;
+    color: var(--dorado-claro);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+.mensaje-relato h2 {
+    max-width: 620px;
+    margin: 0;
+    color: var(--marfil);
+    font-size: clamp(2.3rem, 5vw, 4.7rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 0.98;
+    text-wrap: balance;
+    text-shadow: 0 6px 32px rgba(0, 0, 0, 0.7);
+}
+
+.progreso-relato {
+    position: absolute;
+    z-index: 5;
+    left: clamp(24px, 8vw, 120px);
+    bottom: clamp(40px, 7vh, 70px);
+    width: min(420px, calc(100% - 48px));
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 9px;
+    transition: opacity 0.6s ease;
+}
+
+.indicador-relato {
     position: relative;
-    z-index: 2;
+    height: 2px;
+    overflow: hidden;
+    background: rgba(255, 247, 232, 0.24);
+}
+
+.indicador-relato::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--dorado-suave), var(--dorado-claro));
+    transform: translateX(-101%);
+}
+
+.indicador-relato.completado::after {
+    transform: translateX(0);
+}
+
+.indicador-relato.activo::after {
+    animation: completar-indicador 3.15s linear forwards;
+}
+
+.introduccion.relato-finalizado .mensajes-relato,
+.introduccion.relato-finalizado .progreso-relato {
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+}
+
+.introduccion-final {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    padding: 110px 24px 56px;
+    text-align: center;
+    opacity: 0;
+    filter: blur(10px);
+    pointer-events: none;
+    transform: translateY(18px) scale(0.985);
+    transition:
+        opacity 1.15s ease,
+        filter 1.15s ease,
+        transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.introduccion.relato-finalizado .introduccion-final {
+    opacity: 1;
+    filter: blur(0);
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
 }
 
 .distintivo {
     margin: 0 0 22px;
-    color: var(--dorado-suave);
+    color: var(--dorado-claro);
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     letter-spacing: 0.34em;
     text-transform: uppercase;
-    opacity: 0;
-    transform: translateY(16px);
-    animation: revelar-texto 0.85s ease-out 0.9s forwards;
 }
 
-h1 {
+.introduccion h1 {
     margin: 0;
     color: var(--marfil);
-    font-size: clamp(3.5rem, 8vw, 7.2rem);
+    font-size: clamp(3.7rem, 9vw, 8rem);
     font-weight: 400;
     letter-spacing: 0.015em;
-    line-height: 0.88;
-    text-shadow: 0 0 36px rgba(143, 21, 41, 0.35);
-    opacity: 0;
-    transform: translateY(22px);
-    animation: revelar-texto 1.05s cubic-bezier(0.22, 1, 0.36, 1) 1.08s forwards;
+    line-height: 0.86;
+    text-shadow: 0 6px 42px rgba(0, 0, 0, 0.72);
 }
 
-h1 span {
+.introduccion h1 span {
     display: block;
     color: var(--dorado-suave);
-    background: linear-gradient(135deg, var(--dorado-claro), var(--dorado-suave) 48%, #a8641e);
+    background: linear-gradient(135deg, #fff0bd, var(--dorado-suave) 48%, #a8641e);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -215,20 +455,25 @@ h1 span {
 
 .frase-marca {
     margin: 30px 0 0;
-    color: var(--dorado-suave);
+    color: var(--dorado-claro);
     font-size: clamp(1rem, 2vw, 1.25rem);
     font-style: italic;
     letter-spacing: 0.06em;
-    opacity: 0;
-    transform: translateY(14px);
-    animation: revelar-texto 0.9s ease-out 1.42s forwards;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.82);
 }
 
-/* Botón principal de la introducción */
+.acciones-introduccion {
+    margin-top: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+}
+
 .boton-descubrir {
     position: relative;
     isolation: isolate;
-    margin-top: 38px;
     min-height: 52px;
     display: inline-flex;
     align-items: center;
@@ -236,27 +481,24 @@ h1 span {
     gap: 16px;
     padding: 0 24px;
     overflow: hidden;
-    border: 1px solid rgba(214, 160, 58, 0.72);
+    border: 1px solid rgba(214, 160, 58, 0.78);
     border-radius: 999px;
     color: var(--marfil);
-    background: rgba(74, 13, 24, 0.38);
+    background: rgba(74, 13, 24, 0.58);
     box-shadow:
-        inset 0 0 0 1px rgba(255, 247, 232, 0.04),
-        0 12px 32px rgba(0, 0, 0, 0.28);
+        inset 0 0 0 1px rgba(255, 247, 232, 0.05),
+        0 14px 36px rgba(0, 0, 0, 0.38);
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.73rem;
-    font-weight: 600;
+    font-size: 0.71rem;
+    font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     cursor: pointer;
-    opacity: 1;
-    transform: translateY(0);
     transition:
         color 0.35s ease,
         border-color 0.35s ease,
         box-shadow 0.35s ease,
         transform 0.35s ease;
-    animation: revelar-boton 0.9s ease-out 1.7s backwards;
 }
 
 .boton-descubrir::before {
@@ -273,7 +515,7 @@ h1 span {
     border-color: var(--dorado-claro);
     box-shadow:
         0 0 0 1px rgba(244, 211, 139, 0.12),
-        0 14px 38px rgba(92, 15, 29, 0.38);
+        0 16px 42px rgba(92, 15, 29, 0.46);
     transform: translateY(-2px);
 }
 
@@ -281,13 +523,20 @@ h1 span {
     transform: translateX(0);
 }
 
-.boton-descubrir:focus-visible {
+.boton-descubrir:focus-visible,
+.boton-omitir-relato:focus-visible,
+.boton-repetir-relato:focus-visible {
     outline: 2px solid var(--dorado-claro);
     outline-offset: 5px;
 }
 
 .boton-descubrir:active {
     transform: translateY(1px) scale(0.98);
+}
+
+.boton-descubrir:disabled,
+.boton-repetir-relato:disabled {
+    pointer-events: none;
 }
 
 .flecha-boton {
@@ -299,6 +548,38 @@ h1 span {
 
 .boton-descubrir:hover .flecha-boton {
     transform: translateX(4px);
+}
+
+.boton-repetir-relato {
+    padding: 12px 2px;
+    border: 0;
+    border-bottom: 1px solid rgba(244, 211, 139, 0.42);
+    color: rgba(255, 247, 232, 0.86);
+    background: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.boton-repetir-relato:hover {
+    color: var(--dorado-claro);
+    border-color: var(--dorado-claro);
+}
+
+.descripcion-relato-accesible {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* =====================================================
@@ -314,6 +595,8 @@ h1 span {
 body.pagina-activa {
     display: block;
     padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
     background:
         radial-gradient(circle at 78% 42%, rgba(214, 160, 58, 0.12), transparent 24%),
         radial-gradient(circle at 15% 15%, rgba(143, 21, 41, 0.22), transparent 30%),
@@ -3142,6 +3425,26 @@ summary:focus-visible {
     }
 }
 
+@keyframes acercamiento-relato {
+    from {
+        transform: scale(1.03);
+    }
+
+    to {
+        transform: scale(1.095);
+    }
+}
+
+@keyframes completar-indicador {
+    from {
+        transform: translateX(-101%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
 @keyframes revelar-vela {
     from {
         opacity: 0;
@@ -3332,17 +3635,26 @@ summary:focus-visible {
         display: none;
     }
 
-    .escena-vela,
-    .distintivo,
-    h1,
-    .frase-marca,
-    .boton-descubrir {
-        opacity: 1;
-        transform: none;
+    .ambiente {
+        display: none;
+    }
+
+    .escena-relato,
+    .escena-relato img,
+    .introduccion-final,
+    .mensajes-relato,
+    .progreso-relato {
+        transition: none;
         animation: none;
     }
 
-    .ambiente {
+    .escena-relato img {
+        transform: none;
+    }
+
+    .mensajes-relato,
+    .progreso-relato,
+    .boton-omitir-relato {
         display: none;
     }
 
@@ -3360,13 +3672,6 @@ summary:focus-visible {
     .pagina-principal .presentacion-logo {
         opacity: 1;
         transform: none;
-    }
-
-    .llama,
-    .centro-llama,
-    .aura-vela,
-    .vela::after {
-        animation: none;
     }
 
     .tarjeta-producto,
@@ -3449,17 +3754,15 @@ summary:focus-visible {
 /* Adaptación para tablets y celulares */
 @media (max-width: 900px) {
     body {
-        padding: 30px 22px 42px;
+        padding: 0;
     }
 
     .introduccion {
-        grid-template-columns: 1fr;
-        gap: 18px;
-        text-align: center;
+        min-height: 100svh;
     }
 
     .humo {
-        top: 10%;
+        top: 36%;
         left: 47%;
     }
 
@@ -3467,30 +3770,85 @@ summary:focus-visible {
         left: 53%;
     }
 
-    .escena-vela {
-        --alto-vela: clamp(150px, 42vw, 210px);
-        --ancho-vela: clamp(90px, 25vw, 122px);
-        height: clamp(270px, 70vw, 340px);
+    .escena-relato[data-escena="0"] img {
+        object-position: 54% center;
+    }
+
+    .marca-relato {
+        top: 22px;
+        left: 20px;
+        gap: 11px;
+    }
+
+    .sello-relato {
+        width: 44px;
+    }
+
+    .nombre-relato strong {
+        font-size: 0.86rem;
+    }
+
+    .nombre-relato small {
+        font-size: 0.49rem;
+    }
+
+    .boton-omitir-relato {
+        top: 28px;
+        right: 20px;
+        font-size: 0.6rem;
+    }
+
+    .mensajes-relato {
+        left: 22px;
+        bottom: 104px;
+        width: calc(100% - 44px);
+        min-height: 120px;
+    }
+
+    .mensaje-relato p {
+        margin-bottom: 10px;
+        font-size: 0.59rem;
+    }
+
+    .mensaje-relato h2 {
+        max-width: 430px;
+        font-size: clamp(2.25rem, 11vw, 4rem);
+        line-height: 0.96;
+    }
+
+    .progreso-relato {
+        left: 22px;
+        bottom: 40px;
+        width: calc(100% - 44px);
+    }
+
+    .introduccion-final {
+        padding: 100px 22px 44px;
     }
 
     .distintivo {
-        margin-bottom: 16px;
-        font-size: 0.62rem;
+        margin-bottom: 18px;
+        font-size: 0.58rem;
     }
 
-    h1 {
-        font-size: clamp(3rem, 15vw, 5.4rem);
+    .introduccion h1 {
+        font-size: clamp(3.2rem, 16vw, 5.6rem);
     }
 
     .frase-marca {
         margin-top: 22px;
+        font-size: 0.98rem;
     }
 
     .boton-descubrir {
-        margin-top: 30px;
         min-height: 50px;
         padding-inline: 20px;
-        font-size: 0.67rem;
+        font-size: 0.64rem;
+    }
+
+    .acciones-introduccion {
+        margin-top: 30px;
+        gap: 12px 20px;
     }
 
     .bienvenida-principal {
@@ -3802,10 +4160,35 @@ summary:focus-visible {
 }
 
 @media (max-height: 650px) and (min-width: 901px) {
-    .escena-vela {
-        --alto-vela: 230px;
-        --ancho-vela: 125px;
-        height: 390px;
+    .marca-relato {
+        top: 24px;
+    }
+
+    .boton-omitir-relato {
+        top: 30px;
+    }
+
+    .mensajes-relato {
+        bottom: 82px;
+        min-height: 96px;
+    }
+
+    .mensaje-relato h2 {
+        font-size: clamp(2.1rem, 4.6vw, 3.7rem);
+    }
+
+    .progreso-relato {
+        bottom: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .nombre-relato {
+        display: none;
+    }
+
+    .boton-omitir-relato {
+        letter-spacing: 0.1em;
     }
 }
 

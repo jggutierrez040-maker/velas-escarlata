@@ -8,6 +8,12 @@
 const botonDescubrir = document.querySelector(".boton-descubrir");
 const introduccion = document.querySelector(".introduccion");
 const ambiente = document.querySelector(".ambiente");
+const escenasRelato = Array.from(document.querySelectorAll(".escena-relato"));
+const mensajesRelato = Array.from(document.querySelectorAll(".mensaje-relato"));
+const indicadoresRelato = Array.from(document.querySelectorAll(".indicador-relato"));
+const introduccionFinal = document.querySelector(".introduccion-final");
+const botonOmitirRelato = document.querySelector(".boton-omitir-relato");
+const botonRepetirRelato = document.querySelector(".boton-repetir-relato");
 const paginaPrincipal = document.querySelector("#pagina-principal");
 const cabeceraPrincipal = document.querySelector(".cabecera-principal");
 const botonMenu = document.querySelector(".boton-menu");
@@ -15,6 +21,140 @@ const navegacionPrincipal = document.querySelector(".navegacion-principal");
 const enlaceSaltar = document.querySelector(".enlace-saltar");
 const inicioPrincipal = document.querySelector("#inicio");
 const tituloInicioPrincipal = document.querySelector("#titulo-bienvenida");
+
+/* Secuencia visual que presenta cuatro momentos antes de revelar la marca. */
+const DURACION_ESCENA_RELATO = 3150;
+let temporizadoresRelato = [];
+
+const limpiarTemporizadoresRelato = () => {
+    temporizadoresRelato.forEach((temporizador) => {
+        window.clearTimeout(temporizador);
+    });
+    temporizadoresRelato = [];
+};
+
+const activarEscenaRelato = (indiceActivo) => {
+    escenasRelato.forEach((escena, indice) => {
+        escena.classList.toggle("activa", indice === indiceActivo);
+    });
+
+    mensajesRelato.forEach((mensaje, indice) => {
+        mensaje.classList.toggle("activo", indice === indiceActivo);
+    });
+
+    indicadoresRelato.forEach((indicador, indice) => {
+        indicador.classList.toggle("completado", indice < indiceActivo);
+        indicador.classList.toggle("activo", indice === indiceActivo);
+    });
+
+    if (introduccion) {
+        introduccion.dataset.escenaActiva = String(indiceActivo + 1);
+    }
+};
+
+const mostrarFinalRelato = () => {
+    if (!introduccion || !introduccionFinal || !botonDescubrir) {
+        return;
+    }
+
+    limpiarTemporizadoresRelato();
+    introduccion.classList.add("relato-finalizado");
+    introduccionFinal.setAttribute("aria-hidden", "false");
+    botonDescubrir.disabled = false;
+
+    if (botonRepetirRelato) {
+        botonRepetirRelato.disabled = false;
+    }
+
+    if (botonOmitirRelato) {
+        botonOmitirRelato.hidden = true;
+    }
+
+    indicadoresRelato.forEach((indicador) => {
+        indicador.classList.remove("activo");
+        indicador.classList.add("completado");
+    });
+};
+
+const iniciarRelato = () => {
+    if (
+        !introduccion
+        || escenasRelato.length === 0
+        || escenasRelato.length !== mensajesRelato.length
+    ) {
+        mostrarFinalRelato();
+        return;
+    }
+
+    limpiarTemporizadoresRelato();
+    introduccion.classList.remove("relato-finalizado");
+
+    if (introduccionFinal) {
+        introduccionFinal.setAttribute("aria-hidden", "true");
+    }
+
+    if (botonDescubrir) {
+        botonDescubrir.disabled = true;
+    }
+
+    if (botonRepetirRelato) {
+        botonRepetirRelato.disabled = true;
+    }
+
+    if (botonOmitirRelato) {
+        botonOmitirRelato.hidden = false;
+    }
+
+    activarEscenaRelato(0);
+
+    escenasRelato.slice(1).forEach((escena, indice) => {
+        const indiceEscena = indice + 1;
+        temporizadoresRelato.push(window.setTimeout(() => {
+            activarEscenaRelato(indiceEscena);
+        }, DURACION_ESCENA_RELATO * indiceEscena));
+    });
+
+    temporizadoresRelato.push(window.setTimeout(
+        mostrarFinalRelato,
+        DURACION_ESCENA_RELATO * escenasRelato.length
+    ));
+};
+
+if (
+    introduccion
+    && escenasRelato.length > 0
+    && introduccionFinal
+    && botonDescubrir
+) {
+    const reducirMovimientoRelato = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
+    let relatoIniciado = false;
+    const comenzarRelato = () => {
+        if (relatoIniciado) {
+            return;
+        }
+
+        relatoIniciado = true;
+
+        if (reducirMovimientoRelato) {
+            mostrarFinalRelato();
+        } else {
+            iniciarRelato();
+        }
+    };
+    const primeraImagenRelato = escenasRelato[0].querySelector("img");
+
+    if (!primeraImagenRelato || primeraImagenRelato.complete) {
+        comenzarRelato();
+    } else {
+        primeraImagenRelato.addEventListener("load", comenzarRelato, { once: true });
+        window.setTimeout(comenzarRelato, 1400);
+    }
+
+    botonOmitirRelato?.addEventListener("click", mostrarFinalRelato);
+    botonRepetirRelato?.addEventListener("click", iniciarRelato);
+}
 
 /* Construcción, búsqueda y carga progresiva del catálogo completo. */
 const cuadriculaProductos = document.querySelector(".cuadricula-productos");
@@ -273,6 +413,7 @@ if (botonDescubrir && introduccion && ambiente && paginaPrincipal) {
     ).matches;
 
     botonDescubrir.addEventListener("click", () => {
+        limpiarTemporizadoresRelato();
         const duracionSalida = movimientoReducido ? 0 : 650;
 
         botonDescubrir.disabled = true;
